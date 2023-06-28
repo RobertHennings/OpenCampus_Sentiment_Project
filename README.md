@@ -12,6 +12,9 @@ I followed four approaches:
 4) Optimization and extension of the FinBert model.
 
 ## Useful Links
+### FINRA Daily Short Sale Files
+* FINRA Website: https://www.finra.org/finra-data/browse-catalog/short-sale-volume-data/daily-short-sale-volume-files
+
 ### Sentiment Score
 * RavenPack Composite Score: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwi8jYiNu-X_AhWvSPEDHTyCAo4QFnoECAsQAQ&url=https%3A%2F%2Fwww.ravenpack.com%2Fresearch%2Fcomposite-sentiment-score&usg=AOvVaw2XEsquUqi9b66mnngCF5TK&opi=89978449
 
