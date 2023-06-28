@@ -10,7 +10,7 @@ import tensorflow as tf
 import nltk
 from nltk.corpus import stopwords
 from transformers import BertTokenizer, BertForSequenceClassification, AutoTokenizer, AutoModelForSequenceClassification
-# nltk.download("stopwords")
+
 
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -85,9 +85,10 @@ glob.os.chdir("//Users//Robert_Hennings//Dokumente//Uni//Master//2.Semester//Mac
 from common_utils import remove_stopwords
 from common_utils import train_test_split
 from common_utils import read_text_files_FinPhrase
+from common_utils import plot_metrics
+from common_utils import classify_sentiment
 
 # Next load the text data with its labels and train a model with it
-# glob.os.chdir("//Users//Robert_Hennings//Dokumente//Uni//Master//2.Semester//MachineLearningWithTensorFlow//Project_Sentiment//")
 file_path = "//Users//Robert_Hennings//Dokumente//Uni//Master//2.Semester//MachineLearningWithTensorFlow//Project_Sentiment//Data//Raw_Data//Text_Classification//FinancialPhraseBank-v1.0"
 file_name = "Sentences_50Agree.txt"
 encoding = "ISO-8859-1"
@@ -120,8 +121,6 @@ set_seed = False
 
 train_X, train_y, test_X, test_y = train_test_split(features, labels, train_size, set_seed, seed)
 
-len(test_y)
-
 seed = 3475
 train_data = train_X
 test_data = test_X
@@ -136,82 +135,13 @@ save_path_logs = "//Users//Robert_Hennings//Dokumente//Uni//Master//2.Semester//
 model, hist = nlp_model(seed, train_data, test_data, max_sequence_len, train_labels, test_labels, dropout, epochs, save_logs, save_path_logs)
 
 # Classify new text
-def classify_sentiment(model, text):
-    # Tokenize the text
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    encoded_input = tokenizer(text, truncation=True, padding=True, return_tensors='tf')
-
-    # Make prediction
-    prediction = model.predict(encoded_input['input_ids'])[0][0]
-    
-    # Process prediction
-    sentiment = 'Positive' if prediction > 0.5 else 'Negative'
-    confidence = np.round(prediction * 100, 2)
-    
-    return sentiment, confidence
-
-# Example usage
 text = ["The international electronic industry company Elcoteq has laid off tens of employees from its Tallinn facility ; contrary to earlier layoffs the company contracted the ranks of its office workers , the daily Postimees reported"]
+tokenizer_model = 'bert-base-uncased'
 textstops_removed = remove_stopwords(text, stopwords)[0]
-prob, label = classify_sentiment(model, textstops_removed)
+prob, label = classify_sentiment(model, textstops_removed, tokenizer_model)
 print(f'Label: {label} | Probability: {prob:.4f}')
 
-# Plot the training and validation metrics
-def plot_metrics(history):
-    # Loss
-    plt.figure(figsize=(8, 6))
-    plt.plot(history['loss'], label='Training Loss', color="#9b0a7d")
-    plt.plot(history['val_loss'], label='Validation Loss', color="black")
-    plt.title('Loss')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.legend()
-    plt.show()
-
-    # Accuracy
-    plt.figure(figsize=(8, 6))
-    plt.plot(history['accuracy'], label='Training Accuracy', color="#9b0a7d")
-    plt.plot(history['val_accuracy'], label='Validation Accuracy', color="black")
-    plt.title('Accuracy')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.legend()
-    plt.show()
-
-    # Training
-    plt.figure(figsize=(8, 6))
-    plt.plot(history['loss'], label='Training Loss', color="#9b0a7d")
-    plt.plot(history['accuracy'], label='Training Accuracy', color="black")
-    plt.title('Training')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss/ Accuracy')
-    plt.legend()
-    plt.show()
-
-    # Validation
-    plt.figure(figsize=(8, 6))
-    plt.plot(history['val_loss'], label='Validation Loss', color="#9b0a7d")
-    plt.plot(history['val_accuracy'], label='Validation Accuracy', color="black")
-    plt.title('Validation')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss/ Accuracy')
-    plt.legend()
-    plt.show()
-
-    # Additional metrics
-    for metric_name in history:
-        if metric_name not in ['loss', 'val_loss', 'accuracy', 'val_accuracy']:
-            plt.figure(figsize=(8, 6))
-            plt.plot(history[metric_name], label=f'Training {metric_name}')
-            plt.plot(history[f'val_{metric_name}'], label=f'Validation {metric_name}')
-            plt.title(metric_name)
-            plt.xlabel('Epoch')
-            plt.ylabel(metric_name)
-            plt.legend()
-            plt.show()
-
 # Plot the metrics
+hist = pd.read_csv("//Users//Robert_Hennings//Dokumente//Uni//Master//2.Semester//MachineLearningWithTensorFlow//Project_Sentiment//Logs//Mod_27-06-2023_09:18:01//Mod_hist_df_27-06-2023_09:18:01.csv", usecols=["loss", "accuracy", "val_loss", "val_accuracy"])
+
 plot_metrics(hist)
-
-
-hist = pd.read_csv("//Users//Robert_Hennings//Dokumente//Uni//Master//2.Semester//MachineLearningWithTensorFlow//Project_Sentiment//Logs//Mod_27-06-2023_13:41:25//Mod_hist_df_27-06-2023_13:41:25.csv", usecols=["loss", "accuracy", "val_loss", "val_accuracy"])

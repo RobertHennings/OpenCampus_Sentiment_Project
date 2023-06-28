@@ -38,7 +38,7 @@ def build_sentiment_model():
 
     return model
 
-# Example usage:
+
 # model.summary()
 def classify_sentiment(model, text):
     # Tokenize the text

@@ -81,9 +81,9 @@ neutral_sentences = [text_data[i] for i, text_labels in enumerate(text_labels) i
 negative_sentences = [text_data[i] for i, text_labels in enumerate(text_labels) if text_labels == "negative"]
 
 # Function to generate word clouds
-def generate_word_cloud(text_data):
+def generate_word_cloud(sentences):
     # Concatenate all sentences into a single string
-    text = ' '.join(text_data)
+    text = ' '.join(sentences)
     
     # Generate word cloud
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
