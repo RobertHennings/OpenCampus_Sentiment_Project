@@ -14,10 +14,11 @@ from get_data_short import get_single_ticker_ts
 glob.os.chdir("//Users//Robert_Hennings//Dokumente//Uni//Master//2.Semester//MachineLearningWithTensorFlow//Project_Sentiment//")
 from common_utils import read_in_all_files_from_dir
 from common_utils import safe_single_ts
-
 from common_utils import read_text_files_FinPhrase
 from common_utils import remove_stopwords
 from common_utils import train_test_split
+from common_utils import plot_short_sale_ts
+from common_utils import down_sample_imbalanced_dataset
 
 # Month/Date/Year
 startDate = "08/04/2011"
@@ -50,6 +51,17 @@ def safe_single_ts(save_path: str, unique_ticker_list: list, master_df: pd.DataF
 
 safe_single_ts(save_path, unique_ticker_list, master_df)
 
+# Visualize some well known Timeseries
+path_read = "//Users//Robert_Hennings//Dokumente//Uni//Master//2.Semester//MachineLearningWithTensorFlow//Project_Sentiment//Data//Formatted_Data//Short_Volume"
+stock_ticker = "TSLA"
+# Day/Month/Year
+startDate = "04-01-2010"
+endDate = "04-08-2011"
+show_percent = True
+
+# The function cuts the last value of it seems to be very off, need further investigation
+plot_short_sale_ts(path_read, stock_ticker, startDate, endDate, show_percent)
+
 
 # Next load the text data with its labels and train a model with it
 # glob.os.chdir("//Users//Robert_Hennings//Dokumente//Uni//Master//2.Semester//MachineLearningWithTensorFlow//Project_Sentiment//")
@@ -71,6 +83,19 @@ plt.show()
 
 round((pd.Series(text_labels).value_counts() / len(text_labels)) * 100, 1)
 
+# Next we are gonna downsize the dataset so that every class is equally represented
+data = text_data
+labels = text_labels
+
+text_data_downsized, text_labels_downsized = down_sample_imbalanced_dataset(data, labels)
+# Plot Histogram to get a broad overview of the class distribution
+plt.hist(text_labels_downsized, density=False, color="#9b0a7d")
+plt.title("Distribution of Data classes")
+plt.xlabel("Data Classes")
+plt.ylabel("Absolute Number")
+plt.show()
+
+
 # Word Cloud
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
@@ -79,6 +104,7 @@ from wordcloud import WordCloud
 positive_sentences = [text_data[i] for i, text_labels in enumerate(text_labels) if text_labels == "positive"]
 neutral_sentences = [text_data[i] for i, text_labels in enumerate(text_labels) if text_labels == "neutral"]
 negative_sentences = [text_data[i] for i, text_labels in enumerate(text_labels) if text_labels == "negative"]
+
 
 # Function to generate word clouds
 def generate_word_cloud(sentences):
@@ -98,11 +124,6 @@ def generate_word_cloud(sentences):
 generate_word_cloud(positive_sentences)
 generate_word_cloud(neutral_sentences)
 generate_word_cloud(negative_sentences)
-
-
-
-
-
 
 # Next encode the labels into numbers and extract the stop words from the single sentences
 replace_dict = {"negative":0,

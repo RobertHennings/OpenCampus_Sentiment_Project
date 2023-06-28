@@ -9,7 +9,7 @@ import nltk
 import re
 import random
 import matplotlib.pyplot as plt
-
+from transformers import BertTokenizer, BertForSequenceClassification, AutoTokenizer, AutoModelForSequenceClassification
 
 def read_in_all_files_from_dir(directory_path: str, startDate: str, endDate: str) -> pd.DataFrame:
     """Reads in all .csv files from the specfied directory and appends the contents to
@@ -99,7 +99,8 @@ def remove_stopwords(text_data: list, stopwords: list) -> list:
         word_tokens_sent = [word for word in split_sent if word.lower() not in stop_words]
         word_tokens.append(word_tokens_sent)
         # for token in word_tokens_sent:
-        #     word_tokens.append(token)
+        #    word_tokens.append(token)
+
     return word_tokens
 
 
@@ -197,13 +198,13 @@ def plot_metrics(history: pd.DataFrame) -> plt.plot:
             plt.show()
 
 
-def classify_sentiment(model, text: str, tokenizer_model):
+def classify_sentiment(model, text: str, tokenizer_model: str):
     """Testing of a trained model together with a provided text sample
 
     Args:
         model (tensorlfow model object): Trained Model to be tested with the text sample
         text (str): Text Sample that should be classified
-        tokenizer_model (_type_): Model Name to tokenize the given text sample with
+        tokenizer_model (str): Model Name to tokenize the given text sample with
 
     Returns:
         _type_: Sentiment label of the Text, Probability of reult
@@ -221,8 +222,73 @@ def classify_sentiment(model, text: str, tokenizer_model):
     
     return sentiment, confidence
 
-# Also write a function for generating a word cloud
 
-# Alos write a function that calculates the lenghts ofall the sentences and compare it with their label
+def classify_sentiment(model, text: str, tokenizer_model: str):
+    """Testing of a trained model together with a provided text sample
 
-# Also consider a function for downsampling the dataset as it is highly imbalanced
+    Args:
+        model (tensorflow model object): Trained Model to be tested with the text sample
+        text (str): Text Sample that should be classified
+        tokenizer_model (str): Model Name to tokenize the given text sample with
+
+    Returns:
+        sentiment (str): Sentiment label of the Text
+        confidence (float): Probability of the result
+    """
+    # Tokenize the text
+    tokenizer = BertTokenizer.from_pretrained(tokenizer_model)
+    encoded_input = tokenizer(text, truncation=True, padding='max_length', max_length=100, return_tensors='tf')
+
+    # Make prediction
+    prediction = model.predict(encoded_input['input_ids'])[0][0]
+
+    # Process prediction
+    sentiment = 'Positive' if prediction > 0.5 else 'Negative'
+    confidence = np.round(prediction * 100, 2)
+
+    return sentiment, confidence
+
+# Also write a function that calculates the lenghts of all the sentences and compare it with their label
+
+
+# Note: we aren't randomly choosing here, only the final permutation is random
+def down_sample_imbalanced_dataset(data, labels) ->list:
+    master = pd.DataFrame()
+    master["Data"] = data
+    master["Labels"] = labels
+    print(f"Data class distribution: {master.Labels.value_counts()}")
+
+    positive = master[master.Labels == "positive"].head(min(master.Labels.value_counts()))
+    negative = master[master.Labels == "negative"].head(min(master.Labels.value_counts()))
+    neutral = master[master.Labels == "neutral"].head(min(master.Labels.value_counts()))
+
+    downsized = pd.concat([positive, negative, neutral], axis=0)
+
+    df_downsized_final = downsized.reindex(np.random.permutation(downsized.index)).reset_index(drop=True)
+
+    return df_downsized_final.Data.values, df_downsized_final.Labels.values
+
+
+# The function cuts the last value of it seems to be very off, need further investigation
+def plot_short_sale_ts(path_read, stock_ticker, startDate, endDate, show_percent) -> plt.plot:
+    # build path to file
+    ts = pd.read_csv(path_read + "//" + stock_ticker + ".csv", dtype={"Unnamed: 0": str})
+    new_index = pd.to_datetime(ts.iloc[:, 0].str[:4] + "-" + ts.iloc[:, 0].str[4:6] + "-" + ts.iloc[:, 0].str[6:], format="%Y-%m-%d")
+    ts.index = new_index
+    ts.drop(["Unnamed: 0"], axis=1, inplace=True)
+    ts.index.name = "index"
+    ts["ShortVol_InPercent"] = ts.ShortVolume / ts.TotalVolume
+    # The function cuts the last value of it seems to be very off, need further investigation
+    ts = ts.iloc[:ts.shape[0]-1, :]
+    
+    if show_percent:
+        var_show = ts.ShortVol_InPercent
+    else:
+        var_show = ts.ShortVolume
+    
+    plt.plot(var_show, "-o", color="#9b0a7d")
+    plt.title(f"Short Volume for Ticker: {stock_ticker}")
+    plt.ylabel("Short Volume")
+    plt.xlabel("Time")
+    plt.xticks(rotation=45)
+    plt.show()

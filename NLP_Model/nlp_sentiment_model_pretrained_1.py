@@ -1,17 +1,13 @@
 # Here the NLP Model itself is specified
 # Using a pretrained model setup since we are faced with unlabeled texts
 import torch
-from transformers import BertTokenizer, BertForSequenceClassification, AutoTokenizer, AutoModelForSequenceClassification
+from transformers import BertTokenizer, BertForSequenceClassification, AutoTokenizer, AutoModelForSequenceClassification, TFBertModel
 import tensorflow as tf
 import tensorflow_hub as hub
 import glob
 import datetime as dt
 import pandas as pd
 import numpy as np
-
-
-import tensorflow as tf
-from transformers import TFBertModel, BertTokenizer
 
 def build_sentiment_model():
     # Load pre-trained BERT model and tokenizer
@@ -59,5 +55,4 @@ model = build_sentiment_model()  # Instantiate the model using the function
 example_text = "The international electronic industry company Elcoteq has laid off tens of employees from its Tallinn facility ; contrary to earlier layoffs the company contracted the ranks of its office workers , the daily Postimees reported"
 # negative
 sentiment, confidence = classify_sentiment(model, example_text)
-print(f"Sentiment: {sentiment}")
-print(f"Confidence: {confidence}%")
+print(f"Sentiment: {sentiment}, with a confidence of: {confidence}%")

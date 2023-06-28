@@ -3,14 +3,12 @@ import pandas as pd
 from nltk.corpus import stopwords
 import glob
 text = "The international electronic industry company Elcoteq has laid off tens of employees from its Tallinn facility ; contrary to earlier layoffs the company contracted the ranks of its office workers , the daily Postimees reported"
-
+# Negative
 sentiment_pipeline = pipeline("sentiment-analysis")
 result = sentiment_pipeline(text)[0]
 
 # Print the results
-print(f"Sentiment: {result["label"]result["label"]}")
-print(f"Score: {result["score"]}")
-
+print(f'Sentiment: {result["label"]}, with a Score of: {result["score"]}')
 
 # Test the model on a broader scale and compute some error metrics
 glob.os.chdir("//Users//Robert_Hennings//Dokumente//Uni//Master//2.Semester//MachineLearningWithTensorFlow//Project_Sentiment//")
@@ -65,5 +63,6 @@ def compute_err(test_X, test_y, model):
 
 model = pipeline("sentiment-analysis")
 
-compute_err(test_X[:10], test_y[:10], model)
+result_test_score, result_test_label, err = compute_err(test_X[:40], test_y[:40], model)
 
+print(f"Error rate: {(sum(err) / len(err)) *100} %")
