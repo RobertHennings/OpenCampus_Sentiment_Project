@@ -221,4 +221,8 @@ def classify_sentiment(model, text: str, tokenizer_model):
     
     return sentiment, confidence
 
+# Also write a function for generating a word cloud
 
+# Alos write a function that calculates the lenghts ofall the sentences and compare it with their label
+
+# Also consider a function for downsampling the dataset as it is highly imbalanced
