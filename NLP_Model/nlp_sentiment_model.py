@@ -18,14 +18,17 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, Bidirectional, LSTM, Dense, Dropout
 from tensorflow.keras import regularizers
 
-def nlp_model(seed, train_data, test_data, max_sequence_len, train_labels, test_labels, dropout, epochs, save_logs, save_path_logs):
+def nlp_model(seed: int, set_seed: bool, train_data: list, test_data: list,
+              max_sequence_len: int, train_labels: list, test_labels: list,
+              dropout: float, epochs: int, save_logs: bool, save_path_logs: str):
     # Set the random seed for reproducibility
-    SEED = seed
-    tf.random.set_seed(SEED)
+    if set_seed:
+        SEED = seed
+        tf.random.set_seed(SEED)
 
     # Load the Fin dataset and split it into training and testing sets
-    train_data = train_data  # Your training data as a list of strings
-    test_data = test_data   # Your testing data as a list of strings
+    train_data = train_data  
+    test_data = test_data   
 
     # Tokenize the text data
     tokenizer = Tokenizer()
@@ -41,12 +44,12 @@ def nlp_model(seed, train_data, test_data, max_sequence_len, train_labels, test_
     test_data = pad_sequences(test_sequences, maxlen=MAX_SEQUENCE_LENGTH)
 
     # Prepare the labels
-    train_labels = train_labels  # Your training labels as a list of integers
-    test_labels = test_labels   # Your testing labels as a list of integers
+    train_labels = train_labels  
+    test_labels = test_labels   
 
     train_labels = tf.constant(train_labels)
     test_labels = tf.constant(test_labels)
-    # Set the hyperparameters for your model
+    # Set the hyperparameters
     VOCAB_SIZE = len(tokenizer.word_index) + 1
     EMBEDDING_DIM = 100
     HIDDEN_DIM = 256
@@ -67,15 +70,18 @@ def nlp_model(seed, train_data, test_data, max_sequence_len, train_labels, test_
     # Train the model
     BATCH_SIZE = 64
     EPOCHS = epochs
-
+    # Save the model history
     history = model.fit(train_data, train_labels, batch_size=BATCH_SIZE, epochs=EPOCHS, validation_data=(test_data, test_labels))
-    if save_logs:
+    # Save the model history into tze specified place with timestamp for identification
+    if save_logs and EPOCHS > 7:
         now = dt.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
         glob.os.mkdir(save_path_logs + "//" + "Mod_" + now)
         hist_df = pd.DataFrame(history.history)
         hist_df["Mod_Params"] = [MAX_SEQUENCE_LENGTH, EMBEDDING_DIM, HIDDEN_DIM, OUTPUT_DIM, DROPOUT, BATCH_SIZE, EPOCHS] + (len(hist_df) - 7) * [np.nan]
         hist_df.to_csv(save_path_logs + "//" + "Mod_" + now + "//" + f"Mod_hist_df_{now}.csv")
-    
+    else:
+        print(f"Not able to save the model logs, because too few epochs ({EPOCHS}) for appending model parameters to Log Dataframe, at least 7 needed!")
+
     return model, history
 
 
@@ -122,6 +128,7 @@ set_seed = False
 train_X, train_y, test_X, test_y = train_test_split(features, labels, train_size, set_seed, seed)
 
 seed = 3475
+set_seed = False
 train_data = train_X
 test_data = test_X
 max_sequence_len = 100
