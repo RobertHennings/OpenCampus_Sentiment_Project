@@ -85,7 +85,7 @@ def read_text_files_FinPhrase(file_path: str, file_name: str, encoding: str, sav
     print(f"File: {file_name} succesfully formatted")
     return text_data, text_label
 
-# also include removing numbers more stricly
+# also include removing numbers more stricly and investigate the splitting into list of lists
 def remove_stopwords(text_data: list, stopwords: list) -> list:
     stop_words = [word.lower() for word in stopwords]
     stop_words.append("")

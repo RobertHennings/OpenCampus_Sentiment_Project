@@ -64,6 +64,8 @@ def nlp_model(seed: int, set_seed: bool, train_data: list, test_data: list,
     model.add(Dropout(DROPOUT))
     model.add(Bidirectional(LSTM(HIDDEN_DIM, return_sequences=True)))
     model.add(Dropout(DROPOUT))
+    model.add(Bidirectional(LSTM(HIDDEN_DIM, return_sequences=True)))
+    model.add(Dropout(DROPOUT))
     model.add(Bidirectional(LSTM(HIDDEN_DIM)))
     model.add(Dense(OUTPUT_DIM, activation='softmax', kernel_regularizer=regularizers.l2(0.001)))
     model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
@@ -169,7 +171,14 @@ prob, label = classify_sentiment(model, textstops_removed, tokenizer_model)
 print(f'Label: {label} | Probability: {prob:.4f}')
 
 # Plot the metrics
-hist = pd.read_csv("//Users//Robert_Hennings//Dokumente//Uni//Master//2.Semester//MachineLearningWithTensorFlow//Project_Sentiment//Logs//Mod_28-06-2023_15:10:26//Mod_hist_df_28-06-2023_15:10:26.csv", usecols=["loss", "accuracy", "val_loss", "val_accuracy"])
+hist = pd.read_csv("//Users//Robert_Hennings//Dokumente//Uni//Master//2.Semester//MachineLearningWithTensorFlow//Project_Sentiment//Logs//Mod_28-06-2023_16:12:45//Mod_hist_df_28-06-2023_16:12:45.csv", usecols=["loss", "accuracy", "val_loss", "val_accuracy"])
+
 
 plot_metrics(hist)
+
+from sklearn.datasets import fetch_rcv1
+
+rcv1 = fetch_rcv1()
+
+rcv1.data[0].toarray()
 
