@@ -22,22 +22,25 @@ def classify_sentiment(model, tokenizer, text):
     logits = model(encoded_input['input_ids'])[0]
     probabilities = tf.nn.softmax(logits)[0]
     sentiment_label = tf.argmax(probabilities).numpy()
-
+    
+    # Get probabilities for each sentiment label
+    neutral_prob = probabilities[0].numpy()
+    positive_prob = probabilities[1].numpy()
+    negative_prob = probabilities[2].numpy()
+    
     # Process prediction
-    sentiment = "Positive" if sentiment_label == 1 else "Negative"
+    sentiment = "Neutral" if sentiment_label == 0 else "Positive" if sentiment_label == 1 else "Negative"
     confidence = np.round(probabilities[sentiment_label] * 100, 2)
 
-    return sentiment, confidence
+    return sentiment, confidence, neutral_prob, positive_prob, negative_prob
 
 # Example usage:
 model, tokenizer = build_sentiment_model()  # Instantiate the model and tokenizer
 
-example_text = "The international electronic industry company Elcoteq has laid off tens of employees from its Tallinn facility; contrary to earlier layoffs the company contracted the ranks of its office workers, the daily Postimees reported."
+text = "The international electronic industry company Elcoteq has laid off tens of employees from its Tallinn facility; contrary to earlier layoffs the company contracted the ranks of its office workers, the daily Postimees reported."
 # Negative
 example_text = "Net income from life insurance doubled to EUR 6.8 mn from EUR 3.2 mn , and net income from non-life insurance rose to EUR 5.2 mn from EUR 1.5 mn in the corresponding period in 2009 .@positive Net sales increased to EUR193 .3 m from EUR179 .9 m and pretax profit rose by 34.2 % to EUR43 .1 m. ( EUR1 = USD1 .4 )"
 # Positive
-sentiment, confidence = classify_sentiment(model, tokenizer, example_text)
-print(f"Sentiment: {sentiment} with Confidence: {confidence}%")
-
-
+sentiment, confidence, neutral_prob, positive_prob, negative_prob = classify_sentiment(model, tokenizer, example_text)
+print(f"Sentiment: {sentiment} with Confidence: {confidence}%, neutral: {neutral_prob}, positive: {positive_prob}, negative: {negative_prob}")
 
