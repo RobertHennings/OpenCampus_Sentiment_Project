@@ -25,6 +25,9 @@ In terms of the models, I followed four approaches:
 
 These trained and/or optimized models then should classifiy the news article text, output a numeric score, that will be compared with the behaviour of the respective short sale quotes. Finally from these results, portfolios can be formed (Long and Short Portfolios) and inferences from the achieved returns drawn, to rate a potential effect, finally answering the research questions.
 ## Useful Links
+### Bundesanzeiger Short Sale Files
+* Bundesanzeiger Website: https://www.bundesanzeiger.de/pub/de/to_nlp_start
+
 ### FINRA Daily Short Sale Files
 * FINRA Website: https://www.finra.org/finra-data/browse-catalog/short-sale-volume-data/daily-short-sale-volume-files
 
