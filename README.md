@@ -37,3 +37,10 @@ These trained and/or optimized models then should classifiy the news article tex
 * RavenPack Sentiment Factor: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwi8jYiNu-X_AhWvSPEDHTyCAo4QFnoECBAQAQ&url=https%3A%2F%2Fwww.ravenpack.com%2Fresearch%2Fconstructing-sentiment-factor&usg=AOvVaw28ZUGK6EGXGFPP-RuYWStU&opi=89978449
 
 * RavenPack Sentiment Index: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwi8jYiNu-X_AhWvSPEDHTyCAo4QFnoECAoQAQ&url=https%3A%2F%2Fwww.ravenpack.com%2Fresearch%2Fintroducing-ravenpack-sentiment-index&usg=AOvVaw15aaTb82Q743g5ZBvRjRcd&opi=89978449
+
+### ToDO
+* [ ] Scrape more single short sale files from FINRA website
+* [ ] Code the Sentiment Score Methodology
+* [ ] Get News articles
+* [ ] Train NLP Model with decent accuracy and precision metrics
+* [ ] Tweak NLP Model output to numerical scale
