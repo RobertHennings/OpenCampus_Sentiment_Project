@@ -9,7 +9,9 @@ Examples can be found in this markdown file, following similar approaches as the
 The desired output to create such a score and observe it over time would look like follows:
 
 Positive sentiment: Scores in the range 60 - 100
+
 Neutral sentiment: Scores in the range 40 - 60
+
 Negative sentiment: Scores in the range 0 - 40
 
 From this company specific sentiment time series inferences can be drawn comparing it to the short sale time series of the according company.
