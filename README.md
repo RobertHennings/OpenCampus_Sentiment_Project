@@ -38,6 +38,9 @@ These trained and/or optimized models then should classifiy the news article tex
 
 * RavenPack Sentiment Index: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwi8jYiNu-X_AhWvSPEDHTyCAo4QFnoECAoQAQ&url=https%3A%2F%2Fwww.ravenpack.com%2Fresearch%2Fintroducing-ravenpack-sentiment-index&usg=AOvVaw15aaTb82Q743g5ZBvRjRcd&opi=89978449
 
+### Example Usage 
+* Eikon News Analysis: https://developers.refinitiv.com/en/article-catalog/article/introduction-news-sentiment-analysis-eikon-data-apis-python-example
+
 ### ToDO
 * [ ] Scrape more single short sale files from FINRA website
 * [ ] Code the Sentiment Score Methodology
